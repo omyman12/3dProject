@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -23,11 +24,12 @@ public class UIInventory : MonoBehaviour
     public GameObject equipButton;
     public GameObject unEquipButton;
     public GameObject dropButton;
-    
+
     private PlayerController controller;
     private PlayerCondition condition;
 
     private int curEquipIndex;
+    bool isSpeedbuff = true;
 
     void Start()
     {
@@ -186,6 +188,10 @@ public class UIInventory : MonoBehaviour
 
     public void OnUseButton()
     {
+        StartCoroutine(StartUseButton());
+    }
+    public IEnumerator StartUseButton()
+    {
         if (selectedItem.item.type == ItemType.Consumable)
         {
             for (int i = 0; i < selectedItem.item.consumables.Length; i++)
@@ -196,6 +202,22 @@ public class UIInventory : MonoBehaviour
                         condition.Heal(selectedItem.item.consumables[i].value); break;
                     case ConsumableType.Hunger:
                         condition.Eat(selectedItem.item.consumables[i].value); break;
+                    case ConsumableType.buff:
+                        if (isSpeedbuff)
+                        {
+                            controller.curSpeed = controller.moveSpeed; 
+                            controller.moveSpeed *= (selectedItem.item.consumables[i].value);
+                            isSpeedbuff = false;
+                            //RemoveSelctedItem();
+                            Debug.Log("1");
+                            yield return new WaitForSeconds(1f);
+                            controller.moveSpeed = controller.curSpeed;
+                            Debug.Log("2");
+                            isSpeedbuff = true;
+                            Debug.Log(isSpeedbuff);
+                        }
+                        break;
+
                 }
             }
             RemoveSelctedItem();
@@ -227,7 +249,7 @@ public class UIInventory : MonoBehaviour
         UpdateUI();
     }
 
-    
+
     public void OnEquipButton()
     {
         if (slots[curEquipIndex].equipped)
@@ -239,7 +261,7 @@ public class UIInventory : MonoBehaviour
         curEquipIndex = selectedItemIndex;
         CharacterManager.Instance.Player.equip.EquipNew(selectedItem.item);
         UpdateUI();
-       
+
         SelectItem(selectedItemIndex);
     }
     void UnEquip(int index)

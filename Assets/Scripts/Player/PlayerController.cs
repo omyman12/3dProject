@@ -4,8 +4,9 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Movement")]
+    [Header("Movement")] //해더: 타이틀이 하나생김
     public float moveSpeed;
+    public float curSpeed;
     private Vector2 curMovementInput;
     public float jumpForce;
     public LayerMask groundLayerMask;
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
 
     public Action inventory;
     private Vector2 mouseDelta;
+    int power = 250;
 
     [HideInInspector]
     public bool canLook = true;
@@ -32,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked; //마우스커서를 락
     }
 
     private void FixedUpdate()
@@ -53,13 +55,13 @@ public class PlayerController : MonoBehaviour
         mouseDelta = context.ReadValue<Vector2>();
     }
 
-    public void OnMoveInput(InputAction.CallbackContext context)
+    public void OnMoveInput(InputAction.CallbackContext context) //현재상태를 받아옴
     {
-        if (context.phase == InputActionPhase.Performed)
+        if (context.phase == InputActionPhase.Performed) //눌리는동안
         {
             curMovementInput = context.ReadValue<Vector2>();
         }
-        else if (context.phase == InputActionPhase.Canceled)
+        else if (context.phase == InputActionPhase.Canceled) //땔떄
         {
             curMovementInput = Vector2.zero;
         }
@@ -80,6 +82,13 @@ public class PlayerController : MonoBehaviour
         dir.y = rigidbody.velocity.y;
 
         rigidbody.velocity = dir;
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Jump"))
+        {
+            rigidbody.AddForce(Vector2.up * power, ForceMode.Impulse);
+        }
     }
 
     void CameraLook()
