@@ -69,9 +69,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnJumpInput(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Started && IsGrounded())
+        if (context.phase == InputActionPhase.Started && IsGrounded() && CharacterManager.Instance.Player.condition.UseStamina(10))
         {
-            rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+                rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
         }
     }
 
@@ -79,6 +79,14 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
         dir *= moveSpeed;
+        dir.y = rigidbody.velocity.y;
+
+        rigidbody.velocity = dir;
+    }
+    private void Run() // 시프트를 누르면 달리기
+    {
+        Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
+        dir *= (moveSpeed * 2);
         dir.y = rigidbody.velocity.y;
 
         rigidbody.velocity = dir;

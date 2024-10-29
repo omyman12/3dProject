@@ -184,8 +184,6 @@ public class UIInventory : MonoBehaviour
         unEquipButton.SetActive(false);
         dropButton.SetActive(false);
     }
-
-
     public void OnUseButton()
     {
         if (selectedItem.item.type == ItemType.Consumable)

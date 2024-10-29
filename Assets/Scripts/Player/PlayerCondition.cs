@@ -57,12 +57,9 @@ public class PlayerCondition : MonoBehaviour, IDamagable
             controller.curSpeed = controller.moveSpeed;
             controller.moveSpeed *= amount;
             isSpeedbuff = false;
-            Debug.Log("1");
             yield return new WaitForSeconds(5);
             controller.moveSpeed = controller.curSpeed;
-            Debug.Log("2");
             isSpeedbuff = true;
-            Debug.Log(isSpeedbuff);
         }
     }
     public void StartBuff(float amount)
