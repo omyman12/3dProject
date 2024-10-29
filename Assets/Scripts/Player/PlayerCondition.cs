@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public interface IDamagable
@@ -9,6 +10,7 @@ public interface IDamagable
 public class PlayerCondition : MonoBehaviour, IDamagable
 {
     public UICondition uiCondition;
+    PlayerController controller;
 
     Condition health { get { return uiCondition.health; } }
     Condition hunger { get { return uiCondition.hunger; } }
@@ -16,6 +18,11 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     public float noHungerHealthDecay;
     public event Action onTakeDamage;
+    bool isSpeedbuff = true;
+    void Start()
+    {
+        controller = CharacterManager.Instance.Player.controller;
+    }
 
     private void Update()
     {
@@ -41,6 +48,26 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     public void Eat(float amount)
     {
         hunger.Add(amount);
+    }
+    public IEnumerator Buff(float amount)
+    {
+        Debug.Log("buff");
+        if (isSpeedbuff)
+        {
+            controller.curSpeed = controller.moveSpeed;
+            controller.moveSpeed *= amount;
+            isSpeedbuff = false;
+            Debug.Log("1");
+            yield return new WaitForSeconds(5);
+            controller.moveSpeed = controller.curSpeed;
+            Debug.Log("2");
+            isSpeedbuff = true;
+            Debug.Log(isSpeedbuff);
+        }
+    }
+    public void StartBuff(float amount)
+    {
+        StartCoroutine(Buff(amount));
     }
 
     public void Die()

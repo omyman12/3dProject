@@ -21,14 +21,13 @@ public class Condition : MonoBehaviour
 
     public void Add(float amount)
     {
-        curValue = Mathf.Min(curValue + amount, maxValue);
+        curValue = Mathf.Min(curValue + amount, maxValue); // 컬밸류 + 아이템값/ 맥스밸류중 작은거(맥스 이상 안가게)
     }
 
     public void Subtract(float amount)
     {
-        curValue = Mathf.Max(curValue - amount, 0.0f);
+        curValue = Mathf.Max(curValue - amount, 0.0f); //컬밸류 - 아이템값 / 0 중 큰거 (0이하 안돼게)
     }
-
     public float GetPercentage()
     {
         return curValue / maxValue;

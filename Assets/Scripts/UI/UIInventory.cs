@@ -29,7 +29,6 @@ public class UIInventory : MonoBehaviour
     private PlayerCondition condition;
 
     private int curEquipIndex;
-    bool isSpeedbuff = true;
 
     void Start()
     {
@@ -186,11 +185,8 @@ public class UIInventory : MonoBehaviour
         dropButton.SetActive(false);
     }
 
+
     public void OnUseButton()
-    {
-        StartCoroutine(StartUseButton());
-    }
-    public IEnumerator StartUseButton()
     {
         if (selectedItem.item.type == ItemType.Consumable)
         {
@@ -203,21 +199,9 @@ public class UIInventory : MonoBehaviour
                     case ConsumableType.Hunger:
                         condition.Eat(selectedItem.item.consumables[i].value); break;
                     case ConsumableType.buff:
-                        if (isSpeedbuff)
-                        {
-                            controller.curSpeed = controller.moveSpeed; 
-                            controller.moveSpeed *= (selectedItem.item.consumables[i].value);
-                            isSpeedbuff = false;
-                            //RemoveSelctedItem();
-                            Debug.Log("1");
-                            yield return new WaitForSeconds(1f);
-                            controller.moveSpeed = controller.curSpeed;
-                            Debug.Log("2");
-                            isSpeedbuff = true;
-                            Debug.Log(isSpeedbuff);
-                        }
-                        break;
-
+                        Debug.LogWarning("1");
+                        condition.StartBuff(selectedItem.item.consumables[i].value);
+                        Debug.LogWarning("2"); break;
                 }
             }
             RemoveSelctedItem();

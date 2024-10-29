@@ -3695,6 +3695,7 @@ GameObject:
   - component: {fileID: 1156317801}
   - component: {fileID: 1156317805}
   - component: {fileID: 1156317806}
+  - component: {fileID: 1156317807}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -3821,6 +3822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
   condition: {fileID: 0}
+  buff: {fileID: 0}
   equip: {fileID: 0}
   itemData: {fileID: 0}
   dropPosition: {fileID: 805034047}
@@ -3983,6 +3985,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   curEquip: {fileID: 0}
   equipParent: {fileID: 1719866826}
+--- !u!114 &1156317807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1156317797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e827ffdd5353bc40aef62ff1f7e9e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1188790768
 GameObject:
   m_ObjectHideFlags: 0
