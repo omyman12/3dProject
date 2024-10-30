@@ -6,8 +6,10 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement")] //해더: 타이틀이 하나생김
     public float moveSpeed;
+    public float runSpeed;
     public float curSpeed;
-    private Vector2 curMovementInput;
+    private Vector2 movementInput;
+    public bool isRunning;
     public float jumpForce;
     public LayerMask groundLayerMask;
 
@@ -36,7 +38,6 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked; //마우스커서를 락
     }
-
     private void FixedUpdate()
     {
         Move();
@@ -48,9 +49,10 @@ public class PlayerController : MonoBehaviour
         {
             CameraLook();
         }
+
     }
 
-    public void OnLookInput(InputAction.CallbackContext context)
+    public void OnLookInput(InputAction.CallbackContext context) //마우스 이동량을 받음
     {
         mouseDelta = context.ReadValue<Vector2>();
     }
@@ -59,45 +61,64 @@ public class PlayerController : MonoBehaviour
     {
         if (context.phase == InputActionPhase.Performed) //눌리는동안
         {
-            curMovementInput = context.ReadValue<Vector2>();
+            movementInput = context.ReadValue<Vector2>();
         }
         else if (context.phase == InputActionPhase.Canceled) //땔떄
         {
-            curMovementInput = Vector2.zero;
+            movementInput = Vector2.zero;
         }
     }
 
-    public void OnJumpInput(InputAction.CallbackContext context)
+    public void OnJumpInput(InputAction.CallbackContext context) // 누를때 발동, 땅일때, 스태미나가 10이 있을때 점프
     {
         if (context.phase == InputActionPhase.Started && IsGrounded() && CharacterManager.Instance.Player.condition.UseStamina(10))
         {
-                rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+            rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
         }
     }
-
+    public void OnRunInput(InputAction.CallbackContext context) //쉬프트를 누르면 뛰고있음을 확인
+    {
+        if (context.phase == InputActionPhase.Performed)
+        {
+            isRunning = true;
+        }
+        if (context.phase == InputActionPhase.Canceled)
+        {
+            isRunning = false;
+        }
+    }
+    
     private void Move()
     {
-        Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
-        dir *= moveSpeed;
+        Vector3 dir = transform.forward * movementInput.y + transform.right * movementInput.x;
+        dir *= isRunning ? runSpeed : moveSpeed; 
         dir.y = rigidbody.velocity.y;
 
         rigidbody.velocity = dir;
     }
-    private void Run() // 시프트를 누르면 달리기
-    {
-        Vector3 dir = transform.forward * curMovementInput.y + transform.right * curMovementInput.x;
-        dir *= (moveSpeed * 2);
-        dir.y = rigidbody.velocity.y;
 
-        rigidbody.velocity = dir;
-    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Jump"))
         {
             rigidbody.AddForce(Vector2.up * power, ForceMode.Impulse);
         }
+        if (collision.gameObject.CompareTag("MovingObject")) // 땅에 붙어있어도 같이움직이는 문제 해결해야함
+        {
+            transform.SetParent(collision.transform);  // 부모로 설정
+        }
     }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        //내려왔을 때
+        if (collision.gameObject.CompareTag("MovingObject"))
+        {
+            transform.SetParent(null);  // 부모 관계 해제
+        }
+    }
+
 
     void CameraLook()
     {

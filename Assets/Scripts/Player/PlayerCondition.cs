@@ -26,6 +26,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 
     private void Update()
     {
+        RunningStamina(10);
         hunger.Subtract(hunger.passiveValue * Time.deltaTime);
         stamina.Add(stamina.passiveValue * Time.deltaTime);
 
@@ -85,5 +86,16 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         }
         stamina.Subtract(amount);
         return true;
+    }
+    public void RunningStamina(float stamina) //¶Û¶§ ½ºÅÂ¹Ì³ª ´â´Â
+    {
+        if (controller.isRunning)
+        {
+            CharacterManager.Instance.Player.condition.UseStamina(stamina * Time.deltaTime);
+            if (!CharacterManager.Instance.Player.condition.UseStamina(stamina * Time.deltaTime))
+            {
+                controller.isRunning = false;
+            }
+        }
     }
 }

@@ -197,9 +197,7 @@ public class UIInventory : MonoBehaviour
                     case ConsumableType.Hunger:
                         condition.Eat(selectedItem.item.consumables[i].value); break;
                     case ConsumableType.buff:
-                        Debug.LogWarning("1");
-                        condition.StartBuff(selectedItem.item.consumables[i].value);
-                        Debug.LogWarning("2"); break;
+                        condition.StartBuff(selectedItem.item.consumables[i].value); break;
                 }
             }
             RemoveSelctedItem();
